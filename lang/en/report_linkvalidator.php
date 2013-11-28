@@ -32,3 +32,5 @@ $string['page-report--index'] = 'Course  report';
 $string['page-report--user'] = 'User course  report';
 $string['pluginname'] = 'Link Validation';
 $string['reportname'] = 'Link validation report';
+$string['title'] = 'Module Title';
+$string['links'] = 'Links';
