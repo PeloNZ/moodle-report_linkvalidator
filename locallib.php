@@ -192,44 +192,51 @@ class report_linkvalidator {
     }
 
     // validate and test the url
-    private function test_url($url){
-        // first do some quick sanity checks:
-        if(!$url || !is_string($url)){
-            return 'url is not a string';
+    private function test_urls($content){
+        $results = array();
+        // set the curl handler options
+        $options = array(
+                CURLOPT_HEADER         => true,    // we want headers
+                CURLOPT_NOBODY         => true,    // dont need body
+                CURLOPT_RETURNTRANSFER => true,    // catch output (do NOT print!)
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS      => 5,  // fairly random number, but could prevent unwanted endless redirects with followlocation=true
+                CURLOPT_CONNECTTIMEOUT => 5,   // fairly random number (seconds)... but could prevent waiting forever to get a result
+                CURLOPT_TIMEOUT        => 6,   // fairly random number (seconds)... but could prevent waiting forever to get a result
+        //        CURLOPT_USERAGENT      => "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.89 Safari/537.1",   // pretend we're a regular browser
+        );
+
+        $ch = curl_init();
+        if ($ch === false) {
+            $results[] = debugging('Error initializing cURL session', DEBUG_DEVELOPER);
         }
-        // quick check url is roughly a valid http request: ( http://blah/... ) 
-        if( ! preg_match('/^http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?$/i', $url) ){
-            return 'url is invalid';
-        }
-        // the next bit could be slow:
+        curl_setopt_array($ch, $options);
+
         // returns int responsecode, or false (if url does not exist or connection timeout occurs)
         // NOTE: could potentially take up to 0-30 seconds , blocking further code execution (more or less depending on connection, target site, and local timeout settings))
         // if $followredirects == false: return the FIRST known httpcode (ignore redirects)
         // if $followredirects == true : return the LAST  known httpcode (when redirected)
-        $ch = @curl_init($url);
-        if($ch === false){
-            return false;
+        foreach ($content as $url) {
+            // first do some quick sanity checks:
+            if (!$url || !is_string($url)) {
+                $results[] = 'URL is not a string';
+                continue;
+            }
+            // quick check url is roughly a valid http request: ( http://blah/... )
+            if (!preg_match('/^http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?$/i', $url)) {
+                $results[] = 'URL is invalid';
+                continue;
+            }
+            // set the url to be tested
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_exec($ch);
+            $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            // add the status code to the results, plus the description.
+            $results[] = "{$code} - {$this->httpcodes[$code]}";
         }
+        curl_close($ch);
 
-        @curl_setopt($ch, CURLOPT_HEADER         ,true);    // we want headers
-        @curl_setopt($ch, CURLOPT_NOBODY         ,true);    // dont need body
-        @curl_setopt($ch, CURLOPT_RETURNTRANSFER ,true);    // catch output (do NOT print!)
-        @curl_setopt($ch, CURLOPT_FOLLOWLOCATION ,true);
-        @curl_setopt($ch, CURLOPT_MAXREDIRS      ,5);  // fairly random number, but could prevent unwanted endless redirects with followlocation=true
-        @curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);   // fairly random number (seconds)... but could prevent waiting forever to get a result
-        @curl_setopt($ch, CURLOPT_TIMEOUT        ,6);   // fairly random number (seconds)... but could prevent waiting forever to get a result
-        //      @curl_setopt($ch, CURLOPT_USERAGENT      ,"Mozilla/5.0 (Windows NT 6.0) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.89 Safari/537.1");   // pretend we're a regular browser
-        @curl_exec($ch);
-
-        if(@curl_errno($ch)){   // should be 0
-            @curl_close($ch);
-            return false;
-        }
-
-        $code = @curl_getinfo($ch, CURLINFO_HTTP_CODE); // note: php.net documentation shows this returns a string, but really it returns an int
-        @curl_close($ch);
-
-        return $code;
+        return $results;
     }
 
     private function filter_results() {
