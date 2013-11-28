@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 // just a link to course report
-$ADMIN->add('reports', new admin_externalpage('reportlinkvalidator', get_string('reportname', 'report_linkvalidator'), "$CFG->wwwroot/report/linkvalidator/index.php?id=".SITEID, 'report/linkvalidator:view'));
+//$ADMIN->add('reports', new admin_externalpage('reportlinkvalidator', get_string('reportname', 'report_linkvalidator'), "$CFG->wwwroot/report/linkvalidator/index.php?id=".SITEID, 'report/linkvalidator:view'));
 
 // no report settings
 $settings = null;
