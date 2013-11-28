@@ -156,32 +156,33 @@ class report_linkvalidator {
 
                 $reportrow->cells[] = $activitycell;
 
+                // fetch url content from activity
+                $content = $this->parse_content($cm);
                 // URL cell
                 $urlcell = new html_table_cell();
                 $urlcell->attributes['class'] = 'url';
-                $urlcell->text = ''; 
+                $urlcell->text = '';
+                // add the urls to table
+                foreach ($content as $url) {
+                    $urlcell->text .= html_writer::link($url, format_string($url)) . '</br>';
+                }
+                $reportrow->cells[] = $urlcell;
 
                 // error cell
                 $errorcell = new html_table_cell();
-                $errorcell->attributes['class'] = 'error';
-                $errorcell->text = ''; 
-
-                // fetch url content from activity
-                $content = $this->parse_content($cm);
-                // validate the urls
-                foreach ($content as $url) {
-                    $urlcell->text .= html_writer::link($url, format_string($url)) . '</br>';
-                    $errorcell->text .= $this->test_url($url) . '</br>';
+                $errorcell->attributes['class'] = 'result';
+                $errorcell->text = '';
+                // pass the full content to test_url for validation
+                $errorcontent = $this->test_urls($content);
+                foreach ($errorcontent as $error) {
+                    // add results to table
+                    $errorcell->text .= $error . '</br>';
                 }
-
-                $reportrow->cells[] = $urlcell;
                 $reportrow->cells[] = $errorcell;
-
 
                 $table->data[] = $reportrow;
             }
         }
-
 
         return $table;
     }
