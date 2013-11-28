@@ -25,6 +25,7 @@
 require('/home/chrisw/dev/topnz-moodle/htdocs/config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->dirroot.'/report/linkvalidator/lib.php');
+require_once($CFG->dirroot.'/report/linkvalidator/locallib.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 $id          = optional_param('id', 0, PARAM_INT);// Course ID
