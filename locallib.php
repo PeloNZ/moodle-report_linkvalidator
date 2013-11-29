@@ -243,26 +243,24 @@ class report_linkvalidator {
     }
 
     private function parse_content($coursemodule) {
-        /*
         global $DB;
 
-        $content = $DB->get_record($module->modname, array('id'=>$module->instance));
+        $content = $DB->get_record($coursemodule->modname, array('id'=>$coursemodule->instance), '*', MUST_EXIST);
 
         $urls = array();
-        foreach ($content as $field) {
+        foreach ($content as $data) {
             // a more readably-formatted version of the pattern is on http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-            $pattern  = '(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))';
+            $pattern  = '/http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?/i';
 
-            preg_match_all($pattern, 'this is a link <a href="http://testme.com">linky!</a>', $matches);
-
-            var_dump($content, $matches);
-            die;
-            $urls[] = $matches;
-            // search for urls in text fields
+            if (preg_match_all($pattern, $data, $matches)) {
+                    $urls[] = $matches[0]; // only the full match is needed
+            }
         }
-        */
-        $urls = array('http://catalyst.net.nz', 'http://planetexpress.wgtn.cat-it.co.nz/mongrels', 'notgoodbro');
+        $flaturls = array();
+        foreach ($urls as $k => $v) { // reduce to a single level array
+            $flaturls[] = $v[0];
+        }
 
-        return $urls;
+        return $flaturls;
     }
 }
