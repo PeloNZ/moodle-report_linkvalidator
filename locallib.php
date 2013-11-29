@@ -111,8 +111,8 @@ class report_linkvalidator {
         $table->head = array(
                 get_string('title', 'report_linkvalidator'),
                 get_string('url'),
-                get_string('error'),
-                );
+                get_string('result', 'report_linkvalidator'),
+        );
 
         $prevsecctionnum = 0;
         foreach ($this->modinfo->sections as $sectionnum=>$section) {

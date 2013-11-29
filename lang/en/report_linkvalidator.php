@@ -34,3 +34,4 @@ $string['pluginname'] = 'Link Validation';
 $string['reportname'] = 'Link validation report';
 $string['title'] = 'Module Title';
 $string['links'] = 'Links';
+$string['result'] = 'Status of linked resource';
