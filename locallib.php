@@ -193,7 +193,7 @@ class report_linkvalidator {
     }
 
     // validate and test the url
-    private function test_urls($content){
+    private function test_urls($content) {
         $results = array();
         // set the curl handler options
         $options = array(
@@ -247,20 +247,20 @@ class report_linkvalidator {
 
         $content = $DB->get_record($coursemodule->modname, array('id'=>$coursemodule->instance), '*', MUST_EXIST);
 
-        $urls = array();
-        foreach ($content as $data) {
+        $fields = array();
+        foreach ($content as $field) {
             // a more readably-formatted version of the pattern is on http://daringfireball.net/2010/07/improved_regex_for_matching_urls
             $pattern  = '/http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?/i';
 
-            if (preg_match_all($pattern, $data, $matches)) {
-                    $urls[] = $matches[0]; // only the full match is needed
+            if (preg_match_all($pattern, $field, $matches)) {
+                $fields[] = $matches[0]; // only the full match is needed
             }
         }
-        $flaturls = array();
-        foreach ($urls as $k => $v) { // reduce to a single level array
-            $flaturls[] = $v[0];
+        $urls = array();
+        foreach ($fields as $k => $v) { // reduce to a single level array
+            $urls[] = $v[0];
         }
 
-        return $flaturls;
+        return $urls;
     }
 }
