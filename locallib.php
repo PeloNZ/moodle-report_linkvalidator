@@ -200,7 +200,7 @@ class report_linkvalidator {
                 CURLOPT_HEADER         => true,    // we want headers
                 CURLOPT_NOBODY         => true,    // dont need body
                 CURLOPT_RETURNTRANSFER => true,    // catch output (do NOT print!)
-                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_FOLLOWLOCATION => true,   // if the resource has moved, the teachers should update the link. false returns the first status code, true returns the last status code.
                 CURLOPT_MAXREDIRS      => 5,  // fairly random number, but could prevent unwanted endless redirects with followlocation=true
                 CURLOPT_CONNECTTIMEOUT => 5,   // fairly random number (seconds)... but could prevent waiting forever to get a result
                 CURLOPT_TIMEOUT        => 6,   // fairly random number (seconds)... but could prevent waiting forever to get a result
@@ -215,8 +215,6 @@ class report_linkvalidator {
 
         // returns int responsecode, or false (if url does not exist or connection timeout occurs)
         // NOTE: could potentially take up to 0-30 seconds , blocking further code execution (more or less depending on connection, target site, and local timeout settings))
-        // if $followredirects == false: return the FIRST known httpcode (ignore redirects)
-        // if $followredirects == true : return the LAST  known httpcode (when redirected)
         foreach ($content as $url) {
             // first do some quick sanity checks:
             if (!$url || !is_string($url)) {
