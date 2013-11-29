@@ -1,0 +1,10 @@
+#page-report-linkvalidator-index td.title {text-align:right;}
+#page-report-linkvalidator-index tr.url {text-align: center;}
+#page-report-linkvalidator-index tr.section {text-align: center;}
+#page-report-linkvalidator-index td.result {font-size: 0.9em;}
+
+
+#page-report-linkvalidator-user .section .content {margin-left: 30px;margin-right: 30px;}
+#page-report-linkvalidator-user .section h2 {margin-top: 0;}
+#page-report-linkvalidator-user .section {margin-left: 30px;margin-right: 30px;margin-bottom: 20px;}
+#page-report-linkvalidator-user .section {border-width:1px;border-style:solid;padding:10px;}
