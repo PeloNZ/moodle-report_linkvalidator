@@ -31,6 +31,7 @@ require_once(dirname(__FILE__).'/lib.php');
 class report_linkvalidator {
 
     private $httpcodes = array(
+            0   => 'Invalid or unknown error',
             100 => 'Continue',
             101 => 'Switching Protocols',
             102 => 'Processing',
