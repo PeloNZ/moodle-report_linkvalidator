@@ -111,8 +111,7 @@ class report_linkvalidator {
         echo 'xls time';
     }
 
-    // insert data into table
-    private function build_table() {
+    public function print_table($params) {
         global $CFG, $OUTPUT;
 
         $table = new html_table();
@@ -126,57 +125,38 @@ class report_linkvalidator {
                 get_string('result', 'report_linkvalidator'),
         );
 
-        $prevsecctionnum = 0;
-        foreach ($this->modinfo->sections as $sectionnum=>$section) {
-            foreach ($section as $cmid) {
-                $cm = $this->modinfo->cms[$cmid];
-
-                // get the course section
-                if ($prevsecctionnum != $sectionnum) {
-                    $sectionrow = new html_table_row();
-                    $sectionrow->attributes['class'] = 'section';
-                    $sectioncell = new html_table_cell();
-                    $sectioncell->colspan = count($table->head);
-
-                    $sectiontitle = get_section_name($this->course, $this->sections[$sectionnum]);
-
-                    $sectioncell->text = $OUTPUT->heading($sectiontitle, 3);
-                    $sectionrow->cells[] = $sectioncell;
-                    $table->data[] = $sectionrow;
-
-                    $prevsecctionnum = $sectionnum;
-                }
-
-                $dimmed = $cm->visible ? '' : 'class="dimmed"';
+        foreach ($this->data as $cm) {
+            if (isset($cm->sectiontitle)) {
+                $sectionrow = new html_table_row();
+                $sectionrow->attributes['class'] = 'section';
+                $sectioncell = new html_table_cell();
+                $sectioncell->colspan = count($table->head);
+                $sectioncell->text = $OUTPUT->heading($cm->sectiontitle, 3);
+                $sectionrow->cells[] = $sectioncell;
+                $table->data[] = $sectionrow;
+            } else {
+                $attributes = array(
+                    'dimmed' => ($cm->visible ? '' : 'class="dimmed"')
+                );
                 $modulename = get_string('modulename', $cm->modname);
-
-                // add a row for each activity in the section
-                $reportrow = new html_table_row();
+                $activityicon = $OUTPUT->pix_icon('icon', $modulename, $cm->modname, array('class'=>'icon'));
 
                 // activity cell
                 $activitycell = new html_table_cell();
                 $activitycell->attributes['class'] = 'activity';
+                $activitycell->text = $activityicon . html_writer::link("{$CFG->wwwroot}/mod/{$cm->modname}/view.php?id={$cm->cmid}", format_string($cm->cmname), $attributes);;
 
-                $activityicon = $OUTPUT->pix_icon('icon', $modulename, $cm->modname, array('class'=>'icon'));
-
-                $attributes = array();
-                if (!$cm->visible) {
-                    $attributes['class'] = 'dimmed';
-                }
-
-                $activitycell->text = $activityicon . html_writer::link("$CFG->wwwroot/mod/$cm->modname/view.php?id=$cm->id", format_string($cm->name), $attributes);;
-
+                // add a row for each activity in the section
+                $reportrow = new html_table_row();
                 $reportrow->cells[] = $activitycell;
 
                 // fetch url content from activity
-                $content = $this->parse_content($cm);
                 // URL cell
                 $urlcell = new html_table_cell();
                 $urlcell->attributes['class'] = 'url';
-                $urlcell->text = '';
                 // add the urls to table
-                foreach ($content as $url) {
-                    $urlcell->text .= html_writer::link($url, format_string($url)) . '</br>';
+                foreach ($cm->cells['url'] as $url) {
+                    $urlcell->text .= html_writer::link(($url), format_string($url)) . '</br>';
                 }
                 $reportrow->cells[] = $urlcell;
 
@@ -185,10 +165,9 @@ class report_linkvalidator {
                 $errorcell->attributes['class'] = 'result';
                 $errorcell->text = '';
                 // pass the full content to test_url for validation
-                $errorcontent = $this->test_urls($content);
-                foreach ($errorcontent as $error) {
+                foreach ($cm->cells['result'] as $result) {
                     // add results to table
-                    $errorcell->text .= $error . '</br>';
+                    $errorcell->text .= $result . '</br>';
                 }
                 $reportrow->cells[] = $errorcell;
 
@@ -196,12 +175,7 @@ class report_linkvalidator {
             }
         }
 
-        return $table;
-    }
-
-    // get data
-    private function get_activity_links($activity) {
-
+        echo html_writer::table($table);
     }
 
     // validate and test the url
