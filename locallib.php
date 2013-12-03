@@ -97,10 +97,64 @@ class report_linkvalidator {
         $this->sections = get_all_sections($course->id);
         $this->context = get_context_instance(CONTEXT_COURSE, $course->id);
         $this->data = $this->get_data();
+        var_dump($this->data);
     }
 
     public function download_csv($params) {
-        echo 'csv time';
+        global $DB, $CFG;
+        // separator
+        $s = "\t";
+        // header row
+        $head = array(
+                get_string('section'),
+                get_string('title', 'report_linkvalidator'),
+                get_string('url'),
+                get_string('result', 'report_linkvalidator'),
+        );
+        $text = implode($s, $head);
+
+        $count=0;
+        $tt = getdate(time());
+        $today = mktime (0, 0, 0, $tt["mon"], $tt["mday"], $tt["year"]);
+
+        $strftimedatetime = get_string("strftimedatetime");
+
+        $filename = 'link_validator_report_'.userdate(time(),get_string('backupnameformat', 'langconfig'),99,false);
+        $filename .= '.txt';
+        /*
+        header("Content-Type: application/download\n");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate,post-check=0,pre-check=0");
+        header("Pragma: public");
+
+        echo get_string('savedat').userdate(time(), $strftimedatetime)."\n";
+        echo $text."\n";
+         */
+        $sections = array();
+        foreach ($this->data as $cm) {
+            if (isset($cm->sectiontitle)) {
+                $sections[] = $cm->sectiontitle;
+            }
+
+            var_dump($cm);
+            $row = array();
+            // an activity may have multiple urls, so the line information needs to be duplicated
+            foreach ($cm->cells['url'] as $url) {
+                $row['section'] = $cm->sectiontitle;
+                $row['title'] = $cm->cmname;
+                $row['url'] = $url;
+            }
+            //var_dump($row);
+            foreach ($cm->cells['result'] as $result) {
+                $row['result'] = $result;
+            }
+            var_dump($row);
+//            $text .= implode("\t", $row);
+        }
+        die;
+//        echo $text." \n";
+//        return true;
     }
 
     public function download_ods($params) {
