@@ -249,10 +249,6 @@ class report_linkvalidator {
         return $results;
     }
 
-    private function filter_results() {
-
-    }
-
     private function parse_content($coursemodule) {
         global $DB;
 
