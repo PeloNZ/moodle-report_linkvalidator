@@ -279,10 +279,10 @@ class report_linkvalidator {
                 get_string('title', 'report_linkvalidator'),
                 get_string('url'),
                 get_string('result', 'report_linkvalidator'),
-        );
+                );
 
         foreach ($this->data as $cm) {
-            if (isset($cm->sectiontitle)) {
+            if (empty($cm->result)) {
                 $sectionrow = new html_table_row();
                 $sectionrow->attributes['class'] = 'section';
                 $sectioncell = new html_table_cell();
@@ -292,15 +292,15 @@ class report_linkvalidator {
                 $table->data[] = $sectionrow;
             } else {
                 $attributes = array(
-                    'dimmed' => ($cm->visible ? '' : 'class="dimmed"')
-                );
+                        'dimmed' => ($cm->visible ? '' : 'class="dimmed"')
+                        );
                 $modulename = get_string('modulename', $cm->modname);
                 $activityicon = $OUTPUT->pix_icon('icon', $modulename, $cm->modname, array('class'=>'icon'));
 
                 // activity cell
                 $activitycell = new html_table_cell();
                 $activitycell->attributes['class'] = 'activity';
-                $activitycell->text = $activityicon . html_writer::link("{$CFG->wwwroot}/mod/{$cm->modname}/view.php?id={$cm->cmid}", format_string($cm->cmname), $attributes);;
+                $activitycell->text = $activityicon . html_writer::link("{$CFG->wwwroot}/mod/{$cm->modname}/view.php?id={$cm->cmid}", format_string($cm->cmname), $attributes);
 
                 // add a row for each activity in the section
                 $reportrow = new html_table_row();
@@ -310,27 +310,21 @@ class report_linkvalidator {
                 // URL cell
                 $urlcell = new html_table_cell();
                 $urlcell->attributes['class'] = 'url';
+
+                $resultcell = new html_table_cell();
+                $resultcell->attributes['class'] = 'result';
+                $resultcell->text = '';
                 // add the urls to table
-                foreach ($cm->cells['url'] as $url) {
+                foreach ($cm->result as $url => $result) {
                     $urlcell->text .= html_writer::link(($url), format_string($url)) . '</br>';
+                    $resultcell->text .= $result . '</br>';
                 }
                 $reportrow->cells[] = $urlcell;
-
-                // error cell
-                $errorcell = new html_table_cell();
-                $errorcell->attributes['class'] = 'result';
-                $errorcell->text = '';
-                // pass the full content to test_url for validation
-                foreach ($cm->cells['result'] as $result) {
-                    // add results to table
-                    $errorcell->text .= $result . '</br>';
-                }
-                $reportrow->cells[] = $errorcell;
+                $reportrow->cells[] = $resultcell;
 
                 $table->data[] = $reportrow;
             }
         }
-
         echo html_writer::table($table);
     }
 
