@@ -222,7 +222,68 @@ class report_linkvalidator {
     }
 
     public function download_xls($params) {
-        echo 'xls time';
+        global $CFG, $DB;
+
+        require_once("$CFG->libdir/excellib.class.php");
+
+        $tt = getdate(time());
+        $today = mktime (0, 0, 0, $tt["mon"], $tt["mday"], $tt["year"]);
+
+        $strftimedatetime = get_string("strftimedatetime");
+
+        $nroPages = ceil(count($logs)/(EXCELROWS-FIRSTUSEDEXCELROW+1));
+        $filename = 'logs_'.userdate(time(),get_string('backupnameformat', 'langconfig'),99,false);
+        $filename .= '.xls';
+
+        $workbook = new MoodleExcelWorkbook('-');
+        $workbook->send($filename);
+
+        $worksheet = array();
+        // header row
+        $head = array(
+                get_string('section'),
+                get_string('title', 'report_linkvalidator'),
+                get_string('url'),
+                get_string('result', 'report_linkvalidator'),
+                );
+        $text = implode($s, $head) . "\n";
+
+        // Creating worksheets
+        for ($wsnumber = 1; $wsnumber <= $nroPages; $wsnumber++) {
+            $sheettitle = get_string('logs').' '.$wsnumber.'-'.$nroPages;
+            $worksheet[$wsnumber] = $workbook->add_worksheet($sheettitle);
+            $worksheet[$wsnumber]->set_column(1, 1, 30);
+            $worksheet[$wsnumber]->write_string(0, 0, get_string('savedat').
+                    userdate(time(), $strftimedatetime));
+            $col = 0;
+            foreach ($headers as $item) {
+                $worksheet[$wsnumber]->write(FIRSTUSEDEXCELROW-1,$col,$item,'');
+                $col++;
+            }
+        }
+
+        $formatDate =& $workbook->add_format();
+        $formatDate->set_num_format(get_string('log_excel_date_format'));
+
+        $row = FIRSTUSEDEXCELROW;
+        $wsnumber = 1;
+        $myxls =& $worksheet[$wsnumber];
+        foreach ($logs['logs'] as $log) {
+            if ($nroPages>1) {
+                if ($row > EXCELROWS) {
+                    $wsnumber++;
+                    $myxls =& $worksheet[$wsnumber];
+                    $row = FIRSTUSEDEXCELROW;
+                }
+            }
+
+            $myxls->write($row, 0, format_string($courses[$log->course], true, array('context' => $coursecontext)), '');
+
+            $row++;
+        }
+
+        $workbook->close();
+        return true;
     }
 
     public function print_table($params) {
