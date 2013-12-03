@@ -270,4 +270,37 @@ class report_linkvalidator {
 
         return $urls;
     }
+
+    /**
+     * This function is used to generate and display selector form
+     *
+     * @return void
+     */
+    public function print_selector_form($params) {
+        var_dump($params);
+        global $CFG;
+
+        // Prepare the list of action options.
+        $actions = array(
+                'errorsonly' => get_string('errorsonly', 'report_linkvalidator'),
+                'all' => get_string('all', 'report_linkvalidator'),
+                );
+
+        echo "<form class=\"logselectform\" action=\"$CFG->wwwroot/report/linkvalidator/index.php\" method=\"get\">\n";
+        echo "<div>\n";
+        echo "<input type=\"hidden\" name=\"chooselog\" value=\"1\" />\n";
+        echo html_writer::label(get_string('actions'), 'menumodaction', false, array('class' => 'accesshide'));
+        echo html_writer::select($actions, 'filter', $params['filter'], get_string("actions", 'report_linkvalidator'));
+
+        $logformats = array('showashtml' => get_string('displayonpage'),
+                'downloadascsv' => get_string('downloadtext'),
+                'downloadasods' => get_string('downloadods'),
+                'downloadasexcel' => get_string('downloadexcel'));
+
+        echo html_writer::label(get_string('logsformat', 'report_log'), 'menulogformat', false, array('class' => 'accesshide'));
+        echo html_writer::select($logformats, 'logformat', $params['logformat'], false);
+        echo '<input type="submit" value="'.get_string('gettheselogs').'" />';
+        echo '</div>';
+        echo '</form>';
+    }
 }
