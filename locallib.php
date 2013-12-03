@@ -97,7 +97,6 @@ class report_linkvalidator {
         $this->sections = get_all_sections($course->id);
         $this->context = get_context_instance(CONTEXT_COURSE, $course->id);
         $this->data = $this->get_data();
-        var_dump($this->data);
     }
 
     public function download_csv($params) {
