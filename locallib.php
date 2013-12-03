@@ -251,7 +251,6 @@ class report_linkvalidator {
      * @return void
      */
     public function print_selector_form($params) {
-        var_dump($params);
         global $CFG;
 
         // Prepare the list of action options.
@@ -260,9 +259,10 @@ class report_linkvalidator {
                 'all' => get_string('all', 'report_linkvalidator'),
                 );
 
-        echo "<form class=\"logselectform\" action=\"$CFG->wwwroot/report/linkvalidator/index.php\" method=\"get\">\n";
+        $url = new moodle_url("{$CFG->wwwroot}/report/linkvalidator/index.php");
+        echo "<form class=\"logselectform\" action=\"{$url}\">\n";
         echo "<div>\n";
-        echo "<input type=\"hidden\" name=\"chooselog\" value=\"1\" />\n";
+        echo "<input type=\"hidden\" name=\"id\" value=\"{$params['id']}\" />\n";
         echo html_writer::label(get_string('actions'), 'menumodaction', false, array('class' => 'accesshide'));
         echo html_writer::select($actions, 'filter', $params['filter'], get_string("actions", 'report_linkvalidator'));
 

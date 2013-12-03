@@ -28,34 +28,20 @@ require_once($CFG->dirroot.'/report/linkvalidator/lib.php');
 require_once($CFG->dirroot.'/report/linkvalidator/locallib.php');
 require_once($CFG->libdir.'/adminlib.php');
 
-$id = required_param('id', PARAM_INT); // Course ID
+if (!isset($params)) {
+    $params = array();
+}
+$params['id']          = required_param('id', PARAM_INT); // Course ID
+$params['page']        = optional_param('page', '0', PARAM_INT);     // which page to show
+$params['perpage']     = optional_param('perpage', '100', PARAM_INT); // how many per page
+$params['filter']      = optional_param('filter', 'errorsonly', PARAM_ALPHA);
+$params['logformat']   = optional_param('logformat', 'showashtml', PARAM_ALPHA);
 
-$page        = optional_param('page', '0', PARAM_INT);     // which page to show
-$perpage     = optional_param('perpage', '100', PARAM_INT); // how many per page
-$filter      = optional_param('filter', 'errorsonly', PARAM_ALPHA);
-$logformat   = optional_param('logformat', 'showashtml', PARAM_ALPHA);
-
-$params = array();
-if ($id !== 0) {
-    $params['id'] = $id;
-}
-if ($page !== '0') {
-    $params['page'] = $page;
-}
-if ($perpage !== '100') {
-    $params['perpage'] = $perpage;
-}
-if ($logformat !== 'showashtml') {
-    $params['logformat'] = $logformat;
-}
-if ($filter !== 'errorsonly') {
-    $params['filter'] = $filter;
-}
 $url = '/report/linkvalidator/index.php';
 $PAGE->set_url($url, $params);
 $PAGE->set_pagelayout('report');
 
-$course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
+$course = $DB->get_record('course', array('id'=>$params['id']), '*', MUST_EXIST);
 
 require_login($course);
 
@@ -85,7 +71,7 @@ echo $OUTPUT->heading(get_string('pluginname', 'report_linkvalidator') . ': ' . 
 // selector for report type
 $report->print_selector_form($params);
 
-switch ($logformat) {
+switch ($params['logformat']) {
     case 'showashtml':
         $report->print_table($params);
         break;
