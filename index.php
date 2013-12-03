@@ -87,18 +87,16 @@ $report->print_selector_form($params);
 
 switch ($logformat) {
     case 'showashtml':
-        echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('pluginname', 'report_linkvalidator') . ': ' . format_string($course->fullname));
-
-        // print here
-        $report = new report_linkvalidator($course);
-        $report->print_report();
+        $report->print_table($params);
         break;
     case 'downloadascsv':
+        $report->download_csv($params);
         exit;
     case 'downloadasods':
+        $report->download_ods($params);
         exit;
     case 'downloadasexcel':
+        $report->download_xls($params);
         exit;
 }
 

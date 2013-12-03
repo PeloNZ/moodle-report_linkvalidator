@@ -93,11 +93,20 @@ class report_linkvalidator {
         $this->course = $course;
         $this->modinfo = get_fast_modinfo($course);
         $this->sections = get_all_sections($course->id);
+        $this->context = get_context_instance(CONTEXT_COURSE, $course->id);
+        $this->data = $this->get_data();
     }
 
-    // build table
-    public function print_report() {
-        echo html_writer::table($this->build_table());
+    public function download_csv($params) {
+        echo 'csv time';
+    }
+
+    public function download_ods($params) {
+        echo 'ods time';
+    }
+
+    public function download_xls($params) {
+        echo 'xls time';
     }
 
     // insert data into table
