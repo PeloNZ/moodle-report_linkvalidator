@@ -32,6 +32,7 @@ $id = required_param('id', PARAM_INT); // Course ID
 
 $page        = optional_param('page', '0', PARAM_INT);     // which page to show
 $perpage     = optional_param('perpage', '100', PARAM_INT); // how many per page
+$filter      = optional_param('filter', 'errorsonly', PARAM_ALPHA);
 $logformat   = optional_param('logformat', 'showashtml', PARAM_ALPHA);
 
 $params = array();
@@ -47,7 +48,11 @@ if ($perpage !== '100') {
 if ($logformat !== 'showashtml') {
     $params['logformat'] = $logformat;
 }
-$PAGE->set_url('/report/linkvalidator/index.php', $params);
+if ($filter !== 'errorsonly') {
+    $params['filter'] = $filter;
+}
+$url = '/report/linkvalidator/index.php';
+$PAGE->set_url($url, $params);
 $PAGE->set_pagelayout('report');
 
 $course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
@@ -73,6 +78,12 @@ session_get_instance()->write_close();
 
 $userinfo = get_string('allparticipants');
 $dateinfo = get_string('alldays');
+
+$report = new report_linkvalidator($course);
+echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('pluginname', 'report_linkvalidator') . ': ' . format_string($course->fullname));
+// selector for report type
+$report->print_selector_form($params);
 
 switch ($logformat) {
     case 'showashtml':
