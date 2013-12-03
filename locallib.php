@@ -89,6 +89,8 @@ class report_linkvalidator {
             510 => 'Not Extended',
     );
 
+    private $options = array();
+
     function __construct($course) {
         $this->course = $course;
         $this->modinfo = get_fast_modinfo($course);
