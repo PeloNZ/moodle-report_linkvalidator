@@ -206,16 +206,13 @@ class report_linkvalidator {
     }
 
     public function download_xls($params) {
-        global $CFG, $DB;
+        global $CFG;
 
         require_once("$CFG->libdir/excellib.class.php");
 
-        $tt = getdate(time());
-        $today = mktime (0, 0, 0, $tt["mon"], $tt["mday"], $tt["year"]);
-
         $strftimedatetime = get_string("strftimedatetime");
 
-        $nroPages = ceil(count($logs)/(EXCELROWS-FIRSTUSEDEXCELROW+1));
+        $nroPages = ceil(count($this->data)/(EXCELROWS-FIRSTUSEDEXCELROW+1));
         $filename = 'logs_'.userdate(time(),get_string('backupnameformat', 'langconfig'),99,false);
         $filename .= '.xls';
 
@@ -230,7 +227,6 @@ class report_linkvalidator {
                 get_string('url'),
                 get_string('result', 'report_linkvalidator'),
                 );
-        $text = implode($s, $head) . "\n";
 
         // Creating worksheets
         for ($wsnumber = 1; $wsnumber <= $nroPages; $wsnumber++) {
@@ -240,7 +236,7 @@ class report_linkvalidator {
             $worksheet[$wsnumber]->write_string(0, 0, get_string('savedat').
                     userdate(time(), $strftimedatetime));
             $col = 0;
-            foreach ($headers as $item) {
+            foreach ($head as $item) {
                 $worksheet[$wsnumber]->write(FIRSTUSEDEXCELROW-1,$col,$item,'');
                 $col++;
             }
@@ -252,22 +248,32 @@ class report_linkvalidator {
         $row = FIRSTUSEDEXCELROW;
         $wsnumber = 1;
         $myxls =& $worksheet[$wsnumber];
-        foreach ($logs['logs'] as $log) {
-            if ($nroPages>1) {
-                if ($row > EXCELROWS) {
-                    $wsnumber++;
-                    $myxls =& $worksheet[$wsnumber];
-                    $row = FIRSTUSEDEXCELROW;
-                }
+
+        foreach ($this->data as $cm) {
+            if (empty($cm->result)) {
+                continue;  // skip activities with no urls
             }
+            foreach ($cm->result as $url => $result) {
+                $data = array();
+                $data[] = $cm->sectiontitle;
+                $data[] = $cm->cmname;
+                $data[] = $url;
+                $data[] = $result;
 
-            $myxls->write($row, 0, format_string($courses[$log->course], true, array('context' => $coursecontext)), '');
-
-            $row++;
+                if ($nroPages>1) {
+                    if ($row > EXCELROWS) {
+                        $wsnumber++;
+                        $myxls =& $worksheet[$wsnumber];
+                        $row = FIRSTUSEDEXCELROW;
+                    }
+                }
+                foreach ($data as $i => $str) {
+                    $myxls->write_string($row, $i, $str);
+                }
+                $row++;
+            }
         }
-
         $workbook->close();
-        return true;
     }
 
     public function print_table($params) {
