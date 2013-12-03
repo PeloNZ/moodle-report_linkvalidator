@@ -66,13 +66,12 @@ $userinfo = get_string('allparticipants');
 $dateinfo = get_string('alldays');
 
 $report = new report_linkvalidator($course);
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('pluginname', 'report_linkvalidator') . ': ' . format_string($course->fullname));
-// selector for report type
-$report->print_selector_form($params);
 
 switch ($params['logformat']) {
     case 'showashtml':
+        echo $OUTPUT->header();
+        echo $OUTPUT->heading(get_string('pluginname', 'report_linkvalidator') . ': ' . format_string($course->fullname));
+        $report->print_selector_form($params);
         $report->print_table($params);
         break;
     case 'downloadascsv':
