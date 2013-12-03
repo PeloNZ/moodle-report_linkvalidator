@@ -463,48 +463,32 @@ class report_linkvalidator {
 
         $prevsecctionnum = 0;
         foreach ($this->modinfo->sections as $sectionnum=>$section) {
+            $sectiontitle = get_section_name($this->course, $this->sections[$sectionnum]);
             foreach ($section as $cmid) {
                 $cm = $this->modinfo->cms[$cmid];
 
                 // get the course section
                 if ($prevsecctionnum != $sectionnum) {
                     $sectionrow = new stdClass();
-                    $sectionrow->sectiontitle = get_section_name($this->course, $this->sections[$sectionnum]);
+                    $sectionrow->sectiontitle = $sectiontitle;
                     $table[] = $sectionrow;
                     $prevsecctionnum = $sectionnum;
                 }
+
                 // add a row for each activity in the section
                 $reportrow = new stdClass();
-
                 // activity cell
-                $activitycell = new stdClass();
-
-                $activitycell->text = format_string($cm->name);
+                $reportrow->sectiontitle =  $sectiontitle;
                 $reportrow->modname = $cm->modname;
-                $reportrow->cells['activity'] = $activitycell;
                 $reportrow->visible = $cm->visible;
                 $reportrow->cmid = $cm->id;
                 $reportrow->cmname = $cm->name;
 
                 // fetch url content from activity
                 $content = $this->parse_content($cm);
-                // URL cell
-                $urlcell = new stdClass();
-                // add the urls to table
-                foreach ($content as $k=>$url) {
-                    $urlcell->$k = $url;
-                }
-                $reportrow->cells['url'] = $urlcell;
-
-                // error cell
-                $resultcell = new stdClass();
-                // pass the full content to test_url for validation
                 $results = $this->test_urls($content);
-                foreach ($results as $k=>$result) {
-                    // add results to table
-                    $resultcell->$k = $result;
-                }
-                $reportrow->cells['result'] = $resultcell;
+
+                $reportrow->result = array_combine($content, $results);
 
                 $table[] = $reportrow;
             }
