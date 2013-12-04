@@ -289,7 +289,7 @@ class report_linkvalidator {
                 );
 
         foreach ($this->data as $cm) {
-            if (empty($cm->result)) {
+            if (empty($cm->modname)) { // data only contains a section name
                 $sectionrow = new html_table_row();
                 $sectionrow->attributes['class'] = 'section';
                 $sectioncell = new html_table_cell();
@@ -329,6 +329,9 @@ class report_linkvalidator {
                 $reportrow->cells[] = $urlcell;
                 $reportrow->cells[] = $resultcell;
 
+                if (empty($cm->result)) { // results could be empty
+                    $reportrow->style = 'display:none';
+                }
                 $table->data[] = $reportrow;
             }
         }
