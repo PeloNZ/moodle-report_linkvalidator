@@ -89,17 +89,16 @@ class report_linkvalidator {
             510 => 'Not Extended',
     );
 
-    private $options = array();
-
-    function __construct($course) {
+    function __construct($course, $params) {
         $this->course = $course;
         $this->modinfo = get_fast_modinfo($course);
         $this->sections = get_all_sections($course->id);
         $this->context = get_context_instance(CONTEXT_COURSE, $course->id);
+        $this->filter = $params['filter'];
         $this->data = $this->get_data();
     }
 
-    public function download_csv($params) {
+    public function download_csv() {
         global $DB, $CFG;
         // separator
         $s = "\t";
@@ -137,7 +136,7 @@ class report_linkvalidator {
         echo $text." \n";
     }
 
-    public function download_ods($params) {
+    public function download_ods() {
 
         global $CFG;
 
@@ -204,7 +203,7 @@ class report_linkvalidator {
         $workbook->close();
     }
 
-    public function download_xls($params) {
+    public function download_xls() {
         global $CFG;
 
         require_once("$CFG->libdir/excellib.class.php");
@@ -275,7 +274,7 @@ class report_linkvalidator {
         $workbook->close();
     }
 
-    public function print_table($params) {
+    public function print_table() {
         global $CFG, $OUTPUT;
 
         $table = new html_table();
@@ -470,8 +469,16 @@ class report_linkvalidator {
                 // fetch url content from activity
                 $content = $this->parse_content($cm);
                 $results = $this->test_urls($content);
+                $data = array_combine($content, $results);
 
-                $reportrow->result = array_combine($content, $results);
+                if ($this->filter === 'errorsonly') {
+                    foreach ($data as $k=>$v) {
+                        if ($v === '200 - OK') {
+                            unset($data[$k]);
+                        }
+                    }
+                }
+                $reportrow->result = $data;
 
                 $table[] = $reportrow;
             }
