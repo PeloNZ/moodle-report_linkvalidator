@@ -62,10 +62,7 @@ if ($PAGE->user_allowed_editing() && $adminediting != -1) {
 }
 session_get_instance()->write_close();
 
-$userinfo = get_string('allparticipants');
-$dateinfo = get_string('alldays');
-
-$report = new report_linkvalidator($course);
+$report = new report_linkvalidator($course, $params);
 
 switch ($params['logformat']) {
     case 'showashtml':
