@@ -19,8 +19,8 @@
  *
  * Contains code that are run during the installation of report/linkvalidators
  *
- * @package    report_log
- * @copyright  2011 Petr Skoda {@link http://skodak.org}
+ * @package    report_linkvalidator
+ * @copyright  Catalyst IT 2013
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

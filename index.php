@@ -18,7 +18,8 @@
  * Displays different views of the logs.
  *
  * @package    report_linkvalidator
- * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
+ * @copyright  Catalyst IT 2013
+ * @author     Chris Wharton <chrisw@catalyst.net.nz>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

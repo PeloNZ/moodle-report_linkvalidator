@@ -19,8 +19,9 @@
  *
  * This files lists the functions that are used during the log report generation.
  *
- * @package    report_log
- * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
+ * @package    report_linkvalidator
+ * @copyright  Catalyst IT 2013
+ * @author     Chris Wharton <chrisw@catalyst.net.nz>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -431,7 +432,7 @@ class report_linkvalidator {
                 'downloadasods' => get_string('downloadods'),
                 'downloadasexcel' => get_string('downloadexcel'));
 
-        echo html_writer::label(get_string('logsformat', 'report_log'), 'menulogformat', false, array('class' => 'accesshide'));
+        echo html_writer::label(get_string('logsformat', 'report_linkvalidator'), 'menulogformat', false, array('class' => 'accesshide'));
         echo html_writer::select($logformats, 'logformat', $params['logformat'], false);
         echo '<input type="submit" value="'.get_string('gettheselogs').'" />';
         echo '</div>';

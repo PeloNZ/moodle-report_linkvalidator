@@ -19,8 +19,9 @@
  *
  * Language strings to be used by report/s
  *
- * @package    report_
- * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @package    report_linkvalidator
+ * @copyright  Catalyst IT 2013
+ * @author     Chris Wharton <chrisw@catalyst.net.nz>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

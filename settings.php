@@ -19,8 +19,9 @@
  *
  * Contains settings used by logs report.
  *
- * @package    report_log
- * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
+ * @package    report_linkvalidator
+ * @copyright  Catalyst IT 2013
+ * @author     Chris Wharton <chrisw@catalyst.net.nz>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
