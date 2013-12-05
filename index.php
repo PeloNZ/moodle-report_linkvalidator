@@ -70,16 +70,16 @@ switch ($params['logformat']) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('pluginname', 'report_linkvalidator') . ': ' . format_string($course->fullname));
         $report->print_selector_form($params);
-        $report->print_table($params);
+        $report->print_table();
         break;
     case 'downloadascsv':
-        $report->download_csv($params);
+        $report->download_csv();
         exit;
     case 'downloadasods':
-        $report->download_ods($params);
+        $report->download_ods();
         exit;
     case 'downloadasexcel':
-        $report->download_xls($params);
+        $report->download_xls();
         exit;
 }
 
