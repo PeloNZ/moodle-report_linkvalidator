@@ -94,7 +94,7 @@ class report_linkvalidator {
         $this->course = $course;
         $this->modinfo = get_fast_modinfo($course);
         $this->sections = get_all_sections($course->id);
-        $this->context = get_context_instance(CONTEXT_COURSE, $course->id);
+        $this->context = context_course::instance($course->id);
         $this->filter = $params['filter'];
         $this->data = $this->get_data();
     }
