@@ -392,7 +392,7 @@ class report_linkvalidator {
         $fields = array();
         foreach ($content as $field) {
             // a more readably-formatted version of the pattern is on http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-            $pattern  = '/http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-\/]+)*(:[0-9]+)?(\/.*)?/i';
+            $pattern  = '/http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-\/]+)*(:[0-9]+)?(\/.*)?[^(<\/a>|")]/i';
 
             if (preg_match_all($pattern, $field, $matches)) {
                 $fields[] = $matches[0]; // only the full match is needed
