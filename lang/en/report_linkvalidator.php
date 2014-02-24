@@ -40,4 +40,4 @@ $string['errorsonly'] = 'Display errors';
 $string['all'] = 'Display errors and valids';
 $string['actions'] = 'Filter report';
 $string['result'] = 'Status of linked resource';
-
+$string['logsformat'] = 'Log Format';
