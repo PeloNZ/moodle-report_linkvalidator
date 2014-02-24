@@ -394,16 +394,14 @@ class report_linkvalidator {
             // a more readably-formatted version of the pattern is on http://daringfireball.net/2010/07/improved_regex_for_matching_urls
             $pattern  = '/http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-\/]+)*(:[0-9]+)?(\/.*)?[^(<\/a>|")]/i';
 
-            if (preg_match_all($pattern, $field, $matches)) {
-                $fields[] = $matches[0]; // only the full match is needed
+            if (preg_match_all($pattern, $field, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    $fields[] = $match[0]; // only the full match is needed
+                }
             }
         }
-        $urls = array();
-        foreach ($fields as $k => $v) { // reduce to a single level array
-            $urls[] = $v[0];
-        }
 
-        return $urls;
+        return array_unique($fields);
     }
 
     /**
