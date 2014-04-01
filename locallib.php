@@ -386,10 +386,9 @@ class report_linkvalidator {
         $content = $DB->get_record($coursemodule->modname, array('id'=>$coursemodule->instance), '*', MUST_EXIST);
 
         $fields = array();
+        // from http://daringfireball.net/2010/07/improved_regex_for_matching_urls
+        $pattern = '/\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))/';
         foreach ($content as $field) {
-            // a more readably-formatted version of the pattern is on http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-            $pattern  = '/http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-\/]+)*(:[0-9]+)?(\/.*)?[^(<\/a>|")]/i';
-
             if (preg_match_all($pattern, $field, $matches, PREG_SET_ORDER)) {
                 foreach ($matches as $match) {
                     $fields[] = $match[0]; // only the full match is needed
