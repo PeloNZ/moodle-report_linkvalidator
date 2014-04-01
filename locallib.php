@@ -368,11 +368,6 @@ class report_linkvalidator {
                 $results[] = 'URL is not a string';
                 continue;
             }
-            // quick check url is roughly a valid http request: ( http://blah/... )
-            if (!preg_match('/^http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-\/]+)*(:[0-9]+)?(\/.*)?$/i', $url)) {
-                $results[] = 'URL is invalid';
-                continue;
-            }
             // set the url to be tested
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_exec($ch);
