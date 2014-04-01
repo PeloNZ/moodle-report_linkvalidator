@@ -96,6 +96,7 @@ class report_linkvalidator {
         $this->sections = get_all_sections($course->id);
         $this->context = context_course::instance($course->id);
         $this->filter = $params['filter'];
+        $this->config = get_config('report_linkvalidator');
         $this->data = $this->get_data();
     }
 
@@ -349,8 +350,8 @@ class report_linkvalidator {
                 CURLOPT_RETURNTRANSFER => true,    // catch output (do NOT print!)
                 CURLOPT_FOLLOWLOCATION => true,   // if the resource has moved, the teachers should update the link. false returns the first status code, true returns the last status code.
                 CURLOPT_MAXREDIRS      => 5,  // fairly random number, but could prevent unwanted endless redirects with followlocation=true
-                CURLOPT_CONNECTTIMEOUT => 5,   // fairly random number (seconds)... but could prevent waiting forever to get a result
-                CURLOPT_TIMEOUT        => 6,   // fairly random number (seconds)... but could prevent waiting forever to get a result
+                CURLOPT_CONNECTTIMEOUT => $this->config->timeout,   // seconds to wait for server connection
+                CURLOPT_TIMEOUT        => 5,   // seconds to wait for cURL operation. Should be greater than CONNECTTIMEOUT
         );
 
         $ch = curl_init();

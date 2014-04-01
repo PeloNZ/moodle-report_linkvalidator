@@ -27,8 +27,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-// just a link to course report
-//$ADMIN->add('reports', new admin_externalpage('reportlinkvalidator', get_string('reportname', 'report_linkvalidator'), "$CFG->wwwroot/report/linkvalidator/index.php?id=".SITEID, 'report/linkvalidator:view'));
+$temp = new admin_settingpage('report_linkvalidator', get_string('settingstitle', 'report_linkvalidator'));
 
-// no report settings
-$settings = null;
+$temp->add(new admin_setting_configtext('report_linkvalidator/timeout', get_string('timeout', 'report_linkvalidator'), get_string('timeout_desc', 'report_linkvalidator'), 3, PARAM_INT, 2));
+
+$ADMIN->add('reports', $temp);
