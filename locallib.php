@@ -90,6 +90,10 @@ class report_linkvalidator {
             510 => 'Not Extended',
     );
 
+    private $count_total = 0;
+
+    private $count_errors = 0;
+
     function __construct($course, $params) {
         $this->course = $course;
         $this->modinfo = get_fast_modinfo($course);
@@ -338,6 +342,8 @@ class report_linkvalidator {
             }
         }
         echo html_writer::table($table);
+        echo html_writer::tag('p', get_string('found_total', 'report_linkvalidator', $this->count_total));
+        echo html_writer::tag('p', get_string('found_errors', 'report_linkvalidator', $this->count_errors));
     }
 
     // validate and test the url
@@ -374,6 +380,12 @@ class report_linkvalidator {
             $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             // add the status code to the results, plus the description.
             $results[] = "{$code} - {$this->httpcodes[$code]}";
+
+            // increment the statistics counters
+            $this->count_total++;
+            if ($code !== 200) {
+                $this->count_errors++;
+            }
         }
         curl_close($ch);
 

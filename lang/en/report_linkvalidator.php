@@ -44,3 +44,5 @@ $string['result'] = 'Status of linked resource';
 $string['logsformat'] = 'Log Format';
 $string['timeout'] = 'Time out';
 $string['timeout_desc'] = 'Number of seconds to wait for a link check to time out, before returning an error';
+$string['found_total'] = 'Total number of links found: {$a}';
+$string['found_errors'] = 'Number of errors found: {$a}';
