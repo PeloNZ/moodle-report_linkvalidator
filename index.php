@@ -35,7 +35,7 @@ if (!isset($params)) {
 $params['id']          = required_param('id', PARAM_INT); // Course ID
 $params['page']        = optional_param('page', '0', PARAM_INT);     // which page to show
 $params['perpage']     = optional_param('perpage', '100', PARAM_INT); // how many per page
-$params['filter']      = optional_param('filter', 'errorsonly', PARAM_ALPHA);
+$params['filter']      = optional_param('filter', 'all', PARAM_ALPHA);
 $params['logformat']   = optional_param('logformat', 'showashtml', PARAM_ALPHA);
 
 $url = '/report/linkvalidator/index.php';
